@@ -40,29 +40,14 @@ public class CountersTest {
                 .findCounter(CounterType.MALFORMED).getValue());
     }
 
-//    @Test
-//    public void testMapperCounterZero() throws IOException {
-//        UserAgent userAgent = UserAgent.parseUserAgentString(validLine);
-//        mapDriver
-//                .withInput(new LongWritable(), new Text(validLine))
-//                .withOutput(new Text(userAgent.getBrowser().getName()), new IntWritable(1))
-//                .runTest();
-//        assertEquals("Expected 1 counter increment", 0, mapDriver.getCounters()
-//                .findCounter(CounterType.MALFORMED).getValue());
-//    }
-//
-//    @Test
-//    public void testMapperCounters() throws IOException {
-//        UserAgent userAgent = UserAgent.parseUserAgentString(testIP);
-//        mapDriver
-//                .withInput(new LongWritable(), new Text(testIP))
-//                .withInput(new LongWritable(), new Text(testMalformedIP))
-//                .withInput(new LongWritable(), new Text(testMalformedIP))
-//                .withOutput(new Text(userAgent.getBrowser().getName()), new IntWritable(1))
-//                .runTest();
-//
-//        assertEquals("Expected 2 counter increment", 2, mapDriver.getCounters()
-//                .findCounter(CounterType.MALFORMED).getValue());
-//    }
+    @Test
+    public void testMapperCounterZero() throws IOException {
+        mapDriver
+                .withInput(new LongWritable(), new Text(validLine))
+                .withOutput(new Text("Node1CPU, 1618917289000, 5s"), new IntWritable(66))
+                .runTest();
+        assertEquals("Expected 1 counter increment", 0, mapDriver.getCounters()
+                .findCounter(CounterType.MALFORMED).getValue());
+    }
 }
 
