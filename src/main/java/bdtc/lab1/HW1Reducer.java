@@ -7,7 +7,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 /**
- * Редьюсер: суммирует все единицы полученные от {@link HW1Mapper}, выдаёт суммарное количество пользователей по браузерам
+ * Редьюсер: суммирует все значения, полученные от {@link HW1Mapper}, выдаёт среднее значение метрики в агрегированном
+ * интервале времени
  */
 public class HW1Reducer extends Reducer<Text, IntWritable, Text, IntWritable> {
 

@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 public class HW1Mapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
-//    private final static IntWritable value = new IntWritable();
     private Text outputKey = new Text();
 
     // справочник метрик metricId - metricName
@@ -36,6 +35,7 @@ public class HW1Mapper extends Mapper<LongWritable, Text, Text, IntWritable> {
     // шаблон строки из input файла
     private Pattern pattern = Pattern.compile("(\\d{1,2}), (\\d{13}), (\\d{1,5})");
 
+    // установка Mapper в начальное состояние
     @Override
     protected void setup(Context context) {
         String metrics_line = context.getConfiguration().get("metrics_line");

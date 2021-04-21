@@ -56,12 +56,13 @@ public class MapReduceApplication {
         conf.set("metrics_line", line);
 
         // задаём выходной файл, разделенный запятыми - формат CSV в соответствии с заданием
-//        conf.set("mapreduce.output.textoutputformat.separator", ",");
+        //  conf.set("mapreduce.output.textoutputformat.separator", ",");
 
         Job job = Job.getInstance(conf, "raw metrics");
         job.setJarByClass(MapReduceApplication.class);
         job.setMapperClass(HW1Mapper.class);
         job.setReducerClass(HW1Reducer.class);
+        // Использование Combiner в соответствии с заданием
         job.setCombinerClass(HW1Reducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
