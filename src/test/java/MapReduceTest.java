@@ -21,9 +21,10 @@ public class MapReduceTest {
     private ReduceDriver<Text, IntWritable, Text, IntWritable> reduceDriver;
     private MapReduceDriver<LongWritable, Text, Text, IntWritable, Text, IntWritable> mapReduceDriver;
 
-    private final String testIP = "ip1 - - [24/Apr/2011:04:06:01 -0400] \"GET /~strabal/grease/photo9/927-3.jpg HTTP/1.1\" 200 40028 \"-\" \"Mozilla/5.0 (compatible; YandexImages/3.0; +http://yandex.com/bots)\"\n";
+    private String metrics_line = "1618917289000 1-Node1CPU 2-Node2CPU 3-Node1RAMmb 4-Node2RAMmb";
+    private String test1 = "1, 1618917289305, 66\n";
+    private String test2 = "1, 1618917289991, 99\n";
 
-    private UserAgent userAgent;
     @Before
     public void setUp() {
         HW1Mapper mapper = new HW1Mapper();
@@ -31,14 +32,23 @@ public class MapReduceTest {
         mapDriver = MapDriver.newMapDriver(mapper);
         reduceDriver = ReduceDriver.newReduceDriver(reducer);
         mapReduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
-        userAgent = UserAgent.parseUserAgentString(testIP);
+
+        mapDriver.getConfiguration().set("time_unit", "s");
+        mapDriver.getConfiguration().set("time_window", "5");
+        mapDriver.getConfiguration().set("metrics_line", metrics_line);
+
+        mapReduceDriver.getConfiguration().set("time_unit", "s");
+        mapReduceDriver.getConfiguration().set("time_window", "5");
+        mapReduceDriver.getConfiguration().set("metrics_line", metrics_line);
     }
 
     @Test
     public void testMapper() throws IOException {
         mapDriver
-                .withInput(new LongWritable(), new Text(testIP))
-                .withOutput(new Text(userAgent.getBrowser().getName()), new IntWritable(1))
+                .withInput(new LongWritable(), new Text(test1))
+                .withInput(new LongWritable(), new Text(test2))
+                .withOutput(new Text("Node1CPU, 1618917289000, 5s"), new IntWritable(66))
+                .withOutput(new Text("Node1CPU, 1618917289000, 5s"), new IntWritable(99))
                 .runTest();
     }
 
@@ -48,17 +58,17 @@ public class MapReduceTest {
         values.add(new IntWritable(1));
         values.add(new IntWritable(1));
         reduceDriver
-                .withInput(new Text(testIP), values)
-                .withOutput(new Text(testIP), new IntWritable(2))
+                .withInput(new Text("Node1CPU, 1618917289000, 5s"), values)
+                .withOutput(new Text("Node1CPU, 1618917289000, 5s"), new IntWritable(1))
                 .runTest();
     }
 
     @Test
     public void testMapReduce() throws IOException {
         mapReduceDriver
-                .withInput(new LongWritable(), new Text(testIP))
-                .withInput(new LongWritable(), new Text(testIP))
-                .withOutput(new Text(userAgent.getBrowser().getName()), new IntWritable(2))
+                .withInput(new LongWritable(), new Text(test1))
+                .withInput(new LongWritable(), new Text(test2))
+                .withOutput(new Text("Node1CPU, 1618917289000, 5s"), new IntWritable(82))
                 .runTest();
     }
 }

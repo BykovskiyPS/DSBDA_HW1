@@ -14,9 +14,11 @@ public class HW1Reducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
         int sum = 0;
+        int cnt = 0;
         while (values.iterator().hasNext()) {
             sum += values.iterator().next().get();
+            cnt++;
         }
-        context.write(key, new IntWritable(sum));
+        context.write(key, new IntWritable(sum / cnt));
     }
 }
